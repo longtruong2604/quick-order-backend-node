@@ -25,13 +25,12 @@ import indicatorRoutes from '@/routes/indicator.route'
 import autoRemoveRefreshTokenJob from '@/jobs/autoRemoveRefreshToken.job'
 
 const fastify = Fastify({
-  logger: false
+  logger: true
 })
 
 // Run the server!
 const start = async () => {
   try {
-    createFolder(path.resolve(envConfig.UPLOAD_FOLDER))
     autoRemoveRefreshTokenJob()
     const whitelist = ['*']
     fastify.register(cors, {
@@ -65,9 +64,6 @@ const start = async () => {
     fastify.register(mediaRoutes, {
       prefix: '/media'
     })
-    fastify.register(staticRoutes, {
-      prefix: '/static'
-    })
     fastify.register(dishRoutes, {
       prefix: '/dishes'
     })
@@ -88,7 +84,8 @@ const start = async () => {
     })
     await initOwnerAccount()
     await fastify.listen({
-      port: envConfig.PORT
+      port: envConfig.PORT,
+      host: envConfig.DOMAIN
     })
     console.log(`Server đang chạy: ${API_URL}`)
   } catch (err) {

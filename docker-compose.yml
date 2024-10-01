@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+    image: longtruong2604/fasttify-backend:v1.0 # Tag the image for Docker Hub
+
+    environment:
+      DATABASE_URL: 'file:/app/prisma/dev.db' # Use absolute path inside container
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    ports:
+      - '4000:4000'
+      - '5555:5555' # For Prisma Studio
+
+    volumes:
+      - ./prisma:/app/prisma:rw # Mount the Prisma schema and SQLite db to /app/prisma
+      - .:/app
+      - /app/node_modules
